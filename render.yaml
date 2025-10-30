@@ -10,7 +10,7 @@ services:
     env: python
     plan: free
     buildCommand: "./build.sh"
-    startCommand: "gunicorn Online_Course.wsgi:application"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT Online_Course.wsgi:application"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
