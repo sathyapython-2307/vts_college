@@ -1,5 +1,4 @@
 import os
-import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -57,6 +56,18 @@ TEMPLATES = [
 # Database configuration for Render
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
+    # Import dj_database_url only when DATABASE_URL is provided so local
+    # environments without the package installed won't fail during manage
+    # commands like collectstatic.
+    try:
+        import dj_database_url
+    except ImportError:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            'DATABASE_URL is set but dj_database_url is not installed. '
+            'Install dj-database-url or unset DATABASE_URL.'
+        )
+
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
