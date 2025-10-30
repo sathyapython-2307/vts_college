@@ -1,0 +1,29 @@
+databases:
+  - name: vts_college_db
+    databaseName: vts_college
+    user: vts_college
+    plan: free
+
+services:
+  - type: web
+    name: vts_college
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn Online_Course.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vts_college_db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.4
+      - key: DEBUG
+        value: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+    autoDeploy: true
